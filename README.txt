@@ -1,16 +1,23 @@
-1_rf_model_creator_random_search.py:
+# Random Forest Classifier for Breast Cancer Detection
 
-Creates Random Forest model using RandomSearch. Prints graphics for hyperparameter tuning, confussion
-matrix, and accuracy, precision, recall and F1 scores. 
+## File descriptions:
 
-2_results_load_only.py:
+### 1_rf_model_creator_random_search.py
 
-With model and dataframe already created, prints the same results.
+Creates Random Forest model using RandomSearch. Prints graphics for consequent hyperparameter tuning. Uses 5 folds to create a Confussion Matrix and print Accuracy Scores. Also prints Precision, Recall and F1 scores. 
 
-3_grid_search_optimizer.py / 4_bayes_search_optimizer.py:
+### 2_results_load_only.py
 
-Optimizes model after creation using precursing scripts.
+Prints the same results as the script above, preloading already created models. 
 
-5_graphics.py:
+### 3_grid_search_optimizer.py 
 
-Prints final analyisis and results of the desired model/DatFrame
+Utilises the GridSearch method (MonteCarlo/BruteForce) to optimize the model's hyperparameters. 
+
+### 4_bayes_search_optimizer.py
+
+Utilises the BayesSearch method from scikit.optimize to optimize the model's hyperparameters. 
+
+### 5_graphics.py:
+
+Prints final analyisis, graphs and results corresponding to the desired model/DatFrame.

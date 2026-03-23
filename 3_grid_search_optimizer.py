@@ -94,8 +94,8 @@ print("Dataframe saved successfully.")
 #------------------------------------------------------------------
 
 acc_scores = cross_val_score(gs_model, X_train, y_train, cv=5, scoring="accuracy")
-print(acc_scores)
-print(acc_scores.mean())
+print(f"Accuracy Scores: {acc_scores}")
+print(f"Mean Accuracy: {acc_scores.mean()}")
 
 #------------------------------------------------------------------
 # CONFUSION MATRIX
