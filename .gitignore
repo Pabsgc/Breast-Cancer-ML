@@ -1,0 +1,41 @@
+# Virtual environment
+.venv/
+*.pyc
+__pycache__/
+.env
+
+# VS Code settings
+.vscode/
+
+# Node.js dependencies
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+venv/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build/dist folders
+dist/
+build/
+out/
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Git itself
+*.orig
