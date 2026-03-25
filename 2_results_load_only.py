@@ -127,6 +127,7 @@ for i, param in enumerate(parameters):
     plt.legend(fontsize=6)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 
+plt.tight_layout()
 plt.show()
 
 #------------------------------------------------------------------
@@ -151,6 +152,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
 plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Confusion Matrix of RF')
+plt.tight_layout()
 plt.show()
 
 #------------------------------------------------------------------

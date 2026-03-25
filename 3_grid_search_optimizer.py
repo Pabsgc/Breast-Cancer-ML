@@ -111,6 +111,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
 plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Confusion Matrix of RF')
+plt.tight_layout()
 plt.show()
 
 #------------------------------------------------------------------

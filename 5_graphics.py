@@ -101,6 +101,7 @@ plt.grid(axis='x', linestyle='--', alpha=0.6)
 for index, value in enumerate(feature_importance_df['Importance']):
     plt.text(value, index, f' {value:.3f}', va='center')
 
+plt.tight_layout()
 plt.show()
 
 #------------------------------------------------------------------
@@ -147,6 +148,7 @@ corr_matrix = pd.DataFrame(X_train, columns=dataset.feature_names)[top_features]
 plt.figure(figsize=(12, 10))
 sns.heatmap(corr_matrix, annot=True, cmap='inferno', center=0.5, fmt=".2f", linewidths=0.5)
 plt.title("Heatmap: Linear Dependency between Top Features", fontsize=15)
+plt.tight_layout()
 plt.show()
 
 #------------------------------------------------------------------
@@ -160,6 +162,7 @@ best_4 = feature_importance_df['Feature'].head(4).tolist()
 
 sns.pairplot(df_temp, vars=best_4, hue='target', palette='husl', diag_kind='kde', plot_kws={'alpha': 0.5})
 plt.suptitle("Visual Interaction: How groups separate according to combinations", y=1.02)
+plt.tight_layout()
 plt.show()
 
 #------------------------------------------------------------------

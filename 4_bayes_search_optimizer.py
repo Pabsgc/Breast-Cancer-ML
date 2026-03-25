@@ -14,6 +14,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
+import os
 
 #------------------------------------------------------------------
 # DOWNLOAD & PREPARATION OF THE DATASET
@@ -62,7 +63,7 @@ rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=1, rando
 # BAYESIAN SEARCH FOR HYPERPARAMETER OPTIMIZATION
 #------------------------------------------------------------------
 
-bs_params = {
+space = {
     'n_estimators': Integer(200, 300), 
     'max_depth': Integer(15, 30), 
     'min_samples_split': Integer(3, 7), 
@@ -73,7 +74,7 @@ bs_params = {
     'min_impurity_decrease': Real(0.0, 0.006) 
 }
 
-bayes_search = BayesSearchCV(rf, bs_params, cv=5, scoring='f1', n_iter=32, verbose=2, random_state=42, n_jobs=-1)
+bayes_search = BayesSearchCV(rf, space, cv=5, scoring='f1', n_iter=32, verbose=2, random_state=42, n_jobs=-1)
 bayes_search.fit(X_train, y_train)
 bs_model = bayes_search.best_estimator_
 print(f"Best score: {bayes_search.best_score_}")
@@ -113,6 +114,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
 plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Confusion Matrix of RF')
+plt.tight_layout()
 plt.show()
 
 #------------------------------------------------------------------
@@ -122,3 +124,58 @@ plt.show()
 print(f"\nPrecision: {precision_score(y_train, y_train_pred)}")
 print(f"Recall: {recall_score(y_train, y_train_pred)}")
 print(f"F1-Score: {f1_score(y_train, y_train_pred)}")
+
+#------------------------------------------------------------------
+# SKOPT CONVERGENCE PLOT
+#------------------------------------------------------------------
+
+os.makedirs('bs_graphs', exist_ok=True)
+
+plt.figure()
+from skopt.plots import plot_convergence
+plot_convergence(bayes_search.optimizer_results_[0])
+plt.title('Bayesian Search Convergence Plot')
+plt.xlabel('Number of Iterations')
+plt.ylabel('Best F1 Score')
+plt.tight_layout()
+plt.savefig('bs_graphs/bayes_convergence_plot.png')
+plt.show()
+
+#------------------------------------------------------------------
+# SKOPT PLOT EVALUATION
+#------------------------------------------------------------------
+
+plt.figure()
+from skopt.plots import plot_evaluations
+plot_evaluations(bayes_search.optimizer_results_[0])
+plt.suptitle('Bayesian Search Evaluations Plot', fontsize=16)
+plt.tight_layout()
+plt.savefig('bs_graphs/bayes_evaluations_plot.png')
+plt.show()
+
+#------------------------------------------------------------------
+# SKOPT OBJECTIVE PLOT
+#------------------------------------------------------------------
+
+plt.figure(figsize=(14, 10))
+from skopt.plots import plot_objective
+plot_objective(bayes_search.optimizer_results_[0])
+plt.suptitle('Bayesian Search Objective Plot', fontsize=16)
+plt.tight_layout()
+plt.savefig('bs_graphs/bayes_objective_plot.png')
+plt.show()
+
+#------------------------------------------------------------------
+# SKOPT REGRET PLOT
+#------------------------------------------------------------------
+
+plt.figure()
+from skopt.plots import plot_regret
+plot_regret(bayes_search.optimizer_results_[0])
+plt.title('Bayesian Search Regret Plot')
+plt.xlabel('Number of Iterations')
+plt.ylabel('Regret')
+plt.tight_layout()
+plt.savefig('bs_graphs/bayes_regret_plot.png')
+plt.show()
+

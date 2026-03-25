@@ -16,7 +16,7 @@ Utilises the GridSearch method (MonteCarlo/BruteForce) to optimize the model's h
 
 ### 4_bayes_search_optimizer.py
 
-Utilises the BayesSearch method from scikit.optimize to optimize the model's hyperparameters. 
+Utilises the BayesSearch method from scikit.optimize to optimize the model's hyperparameters. It will probably be best practice to first do a RandomSearchCV to locate the highest F1-Score areas of the hyperparameter space, and subsequently do a BayesSearchCV to locate the hyperparameter combination that results in the best possible Recall Score.
 
 ### 5_graphics.py:
 
