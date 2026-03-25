@@ -12,6 +12,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
+import os
 
 #------------------------------------------------------------------
 # DOWNLOAD & PREPARATION OF THE DATASET
@@ -53,16 +54,26 @@ print(f"Shape of y_test: {y_test.shape}\n")
 # MODEL & DATAFRAME LOADING
 #------------------------------------------------------------------
 
-# Loading best model and results of the random search
-rs_df = pd.read_csv('rs_dataframe.csv')
-rs_model = joblib.load('rs_model.pkl')
+# Uncomment to use rs_model (Random Search)
+df = pd.read_csv('rs_dataframe.csv')
+model = joblib.load('rs_model.pkl')
+
+# Uncomment to use gs_model (Grid Search)
+# df = pd.read_csv('gs_dataframe.csv')
+# model = joblib.load('gs_model.pkl')
+
+# Uncomment to use bs_model (Bayesian Search)
+# df = pd.read_csv('bs_dataframe.csv')
+# model = joblib.load('bs_model.pkl')
+
+os.makedirs('analysis_graphs', exist_ok=True)
 
 #------------------------------------------------------------------
 # HYPERPARAMETER IMPACT ANALYSIS GRAPHICS
 #------------------------------------------------------------------
 
 # Winner extraction for graphics
-winner = rs_df[rs_df['rank_test_score'] == 1].iloc[0]
+winner = df[df['rank_test_score'] == 1].iloc[0]
 
 parameters = ['param_n_estimators', 'param_max_depth', 'param_min_samples_split', 'param_min_samples_leaf',
               'param_ccp_alpha', 'param_criterion', 'param_max_features', 'param_min_impurity_decrease']
@@ -75,14 +86,14 @@ for i, param in enumerate(parameters):
 
     plt.subplot(4, 2, i + 1)
     # Sort by numeric values of the parameter for a cleaner line plot
-    numeric_col = pd.to_numeric(rs_df[param], errors='coerce')
+    numeric_col = pd.to_numeric(df[param], errors='coerce')
     if numeric_col.notna().any():
-        df_plot = rs_df.assign(_num=numeric_col).sort_values(by="_num").drop(columns="_num")
+        df_plot = df.assign(_num=numeric_col).sort_values(by="_num").drop(columns="_num")
     else:
-        df_plot = rs_df.copy()
+        df_plot = df.copy()
 
     # Transform to string for better x-axis labels & 'None' handling
-    df_plot[param] = rs_df[param].astype(object)
+    df_plot[param] = df[param].astype(object)
     df_plot[param] = df_plot[param].where(df_plot[param].notna(), 'None')
     df_plot[param] = df_plot[param].astype(str)
 
@@ -128,13 +139,14 @@ for i, param in enumerate(parameters):
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 
 plt.tight_layout()
+plt.savefig('analysis_graphs/parameter_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
 # ACCURACY SCORES
 #------------------------------------------------------------------
 
-acc_scores = cross_val_score(rs_model, X_train, y_train, cv=5, scoring="accuracy")
+acc_scores = cross_val_score(model, X_train, y_train, cv=5, scoring="accuracy")
 print(f"Accuracy Scores: {acc_scores}")
 print(f"Mean Accuracy: {acc_scores.mean()}")
 
@@ -142,7 +154,7 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 # CONFUSION MATRIX
 #------------------------------------------------------------------
 
-y_train_pred = cross_val_predict(rs_model, X_train, y_train, cv=5)
+y_train_pred = cross_val_predict(model, X_train, y_train, cv=5)
 cm = confusion_matrix(y_train, y_train_pred)
 
 plt.figure()
@@ -153,6 +165,7 @@ plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Confusion Matrix of RF')
 plt.tight_layout()
+plt.savefig('analysis_graphs/confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------

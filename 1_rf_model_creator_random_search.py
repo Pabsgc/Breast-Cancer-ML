@@ -12,6 +12,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
+import os
 
 #------------------------------------------------------------------
 # DOWNLOAD & PREPARATION OF THE DATASET
@@ -79,7 +80,7 @@ rs_model = random_search.best_estimator_
 print(f"Best F1 score: {random_search.best_score_}\n") 
 print(f"Best Parameters: {random_search.best_params_}\n")
 
-# Download of the best model and results of the random search
+# Download of the best model and DataFrame of the random search
 joblib.dump(rs_model, 'rs_model.pkl')
 print("Model saved successfully.\n")
 
@@ -100,6 +101,8 @@ winner = rs_df[rs_df['rank_test_score'] == 1].iloc[0]
 
 parameters = ['param_n_estimators', 'param_max_depth', 'param_min_samples_split', 'param_min_samples_leaf',
               'param_ccp_alpha', 'param_criterion', 'param_max_features', 'param_min_impurity_decrease']
+
+os.makedirs('rs_graphs', exist_ok=True)
 
 plt.figure()
 plt.subplots_adjust(hspace=0.5, wspace=0.3)
@@ -162,6 +165,7 @@ for i, param in enumerate(parameters):
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 
 plt.tight_layout()
+plt.savefig('rs_graphs/rs_parameter_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -187,6 +191,7 @@ plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Confusion Matrix of RF')
 plt.tight_layout()
+plt.savefig('rs_graphs/rs_confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------

@@ -12,6 +12,7 @@ from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
+import os
 
 #------------------------------------------------------------------
 # DOWNLOAD & PREPARATION OF THE DATASET
@@ -77,7 +78,7 @@ gs_model = grid_search.best_estimator_
 print(f"Best score: {grid_search.best_score_}")
 print(f"Best parameters: {grid_search.best_params_}")
 
-# Download of the best model and results of the random search
+# Download of the best model and DataFrame of the grid search
 joblib.dump(gs_model, 'gs_model.pkl')
 print("Model saved successfully.")
 
@@ -85,7 +86,7 @@ gs_df = pd.DataFrame(grid_search.cv_results_)
 gs_df.to_csv('gs_dataframe.csv', index=False)
 print("Dataframe saved successfully.")
 
-# Loading best model and results of the random search
+# Loading best model and results of the grid search
 # gs_df = pd.read_csv('gs_dataframe.csv')
 # gs_model = joblib.load('gs_model.pkl')
 
@@ -104,6 +105,8 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 y_train_pred = cross_val_predict(gs_model, X_train, y_train, cv=5)
 cm = confusion_matrix(y_train, y_train_pred)
 
+os.makedirs('gs_graphs', exist_ok=True)
+
 plt.figure(figsize=(8, 6))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
             xticklabels=['Benign (Pred)', 'Malignant (Pred)'],
@@ -112,6 +115,7 @@ plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Confusion Matrix of RF')
 plt.tight_layout()
+plt.savefig('gs_graphs/gs_confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------

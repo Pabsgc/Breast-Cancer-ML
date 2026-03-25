@@ -27,6 +27,10 @@ model = joblib.load('rs_model.pkl')
 # df = pd.read_csv('gs_dataframe.csv')
 # model = joblib.load('gs_model.pkl')
 
+# Uncomment to use bs_model (Bayesian Search)
+# df = pd.read_csv('bs_dataframe.csv')
+# model = joblib.load('bs_model.pkl')
+
 #------------------------------------------------------------------
 # DOWNLOAD & PREPARATION OF THE DATASET
 #------------------------------------------------------------------

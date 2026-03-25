@@ -8,6 +8,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import GridSearchCV
 from skopt import BayesSearchCV
 from skopt.space import Integer, Real, Categorical
+from skopt.plots import plot_convergence, plot_evaluations, plot_objective, plot_regret
 import joblib
 import seaborn as sns
 from sklearn.model_selection import cross_val_score
@@ -80,13 +81,17 @@ bs_model = bayes_search.best_estimator_
 print(f"Best score: {bayes_search.best_score_}")
 print(f"Best parameters: {bayes_search.best_params_}")
 
-# Download of the best model and results of the Bayesian search
+# Download of the best model and DataFrame of the Bayesian search
 joblib.dump(bs_model, 'bs_model.pkl')
 print("Model saved successfully.")
 
 bs_df = pd.DataFrame(bayes_search.cv_results_)
 bs_df.to_csv('bs_dataframe.csv', index=False)
 print("Dataframe saved successfully.")
+
+# Download of the optimizer results for graphics
+joblib.dump(bayes_search.optimizer_results_[0], 'bs_optimizer_results.pkl')
+print("Optimizer results saved successfully.")
 
 # Loading best model and results of the Bayesian search
 # bs_df = pd.read_csv('bs_dataframe.csv')
@@ -131,13 +136,13 @@ print(f"F1-Score: {f1_score(y_train, y_train_pred)}")
 
 os.makedirs('bs_graphs', exist_ok=True)
 
-plt.figure()
-from skopt.plots import plot_convergence
+plt.figure(figsize=(18, 12))
 plot_convergence(bayes_search.optimizer_results_[0])
 plt.title('Bayesian Search Convergence Plot')
 plt.xlabel('Number of Iterations')
 plt.ylabel('Best F1 Score')
-plt.tight_layout()
+plt.tight_layout(pad=3.5)
+plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
 plt.savefig('bs_graphs/bayes_convergence_plot.png')
 plt.show()
 
@@ -145,11 +150,11 @@ plt.show()
 # SKOPT PLOT EVALUATION
 #------------------------------------------------------------------
 
-plt.figure()
-from skopt.plots import plot_evaluations
+plt.figure(figsize=(18, 12))
 plot_evaluations(bayes_search.optimizer_results_[0])
 plt.suptitle('Bayesian Search Evaluations Plot', fontsize=16)
-plt.tight_layout()
+plt.tight_layout(pad=3.5)
+plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
 plt.savefig('bs_graphs/bayes_evaluations_plot.png')
 plt.show()
 
@@ -157,11 +162,11 @@ plt.show()
 # SKOPT OBJECTIVE PLOT
 #------------------------------------------------------------------
 
-plt.figure(figsize=(14, 10))
-from skopt.plots import plot_objective
+plt.figure(figsize=(20, 14))
 plot_objective(bayes_search.optimizer_results_[0])
 plt.suptitle('Bayesian Search Objective Plot', fontsize=16)
-plt.tight_layout()
+plt.tight_layout(pad=3.5)
+plt.subplots_adjust(left=0.08, right=0.96, top=0.92, bottom=0.08, hspace=0.4, wspace=0.3)
 plt.savefig('bs_graphs/bayes_objective_plot.png')
 plt.show()
 
@@ -169,13 +174,13 @@ plt.show()
 # SKOPT REGRET PLOT
 #------------------------------------------------------------------
 
-plt.figure()
-from skopt.plots import plot_regret
+plt.figure(figsize=(18, 12))
 plot_regret(bayes_search.optimizer_results_[0])
 plt.title('Bayesian Search Regret Plot')
 plt.xlabel('Number of Iterations')
 plt.ylabel('Regret')
-plt.tight_layout()
+plt.tight_layout(pad=3.5)
+plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
 plt.savefig('bs_graphs/bayes_regret_plot.png')
 plt.show()
 
