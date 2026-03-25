@@ -90,6 +90,8 @@ print("Dataframe saved successfully.")
 # gs_df = pd.read_csv('gs_dataframe.csv')
 # gs_model = joblib.load('gs_model.pkl')
 
+os.makedirs('gs_graphs', exist_ok=True)
+
 #------------------------------------------------------------------
 # ACCURACY SCORES
 #------------------------------------------------------------------
@@ -104,8 +106,6 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 
 y_train_pred = cross_val_predict(gs_model, X_train, y_train, cv=5)
 cm = confusion_matrix(y_train, y_train_pred)
-
-os.makedirs('gs_graphs', exist_ok=True)
 
 plt.figure(figsize=(8, 6))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',

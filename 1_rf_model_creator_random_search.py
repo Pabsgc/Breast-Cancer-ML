@@ -92,6 +92,8 @@ print("Dataframe saved successfully.\n")
 # rs_df = pd.read_csv('rs_dataframe.csv')
 # rs_model = joblib.load('rs_model.pkl')
 
+os.makedirs('rs_graphs', exist_ok=True)
+
 #------------------------------------------------------------------
 # HYPERPARAMETER IMPACT ANALYSIS GRAPHICS
 #------------------------------------------------------------------
@@ -101,8 +103,6 @@ winner = rs_df[rs_df['rank_test_score'] == 1].iloc[0]
 
 parameters = ['param_n_estimators', 'param_max_depth', 'param_min_samples_split', 'param_min_samples_leaf',
               'param_ccp_alpha', 'param_criterion', 'param_max_features', 'param_min_impurity_decrease']
-
-os.makedirs('rs_graphs', exist_ok=True)
 
 plt.figure()
 plt.subplots_adjust(hspace=0.5, wspace=0.3)
