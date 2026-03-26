@@ -66,7 +66,7 @@ model = joblib.load('models/rs_model.pkl')
 # df = pd.read_csv('dataframes/bs_dataframe.csv')
 # model = joblib.load('models/bs_model.pkl')
 
-os.makedirs('analysis_graphs', exist_ok=True)
+os.makedirs('preloaded_graphs', exist_ok=True)
 
 #------------------------------------------------------------------
 # HYPERPARAMETER IMPACT ANALYSIS GRAPHICS
@@ -139,7 +139,7 @@ for i, param in enumerate(parameters):
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 
 plt.tight_layout()
-plt.savefig('analysis_graphs/parameter_importance.png')
+plt.savefig('preloaded_graphs/parameter_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -163,9 +163,9 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
             yticklabels=['Benign (Real)', 'Malignant (Real)'])
 plt.xlabel('Prediction')
 plt.ylabel('Reality')
-plt.title('Confusion Matrix of RF')
+plt.title('Cross-Validation Confusion Matrix')
 plt.tight_layout()
-plt.savefig('analysis_graphs/confusion_matrix.png')
+plt.savefig('preloaded_graphs/confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------

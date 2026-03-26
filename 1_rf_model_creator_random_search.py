@@ -192,7 +192,7 @@ sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
             yticklabels=['Benign (Real)', 'Malignant (Real)'])
 plt.xlabel('Prediction')
 plt.ylabel('Reality')
-plt.title('Confusion Matrix of RF')
+plt.title('Cross-Validation Confusion Matrix')
 plt.tight_layout()
 plt.savefig('rs_graphs/rs_confusion_matrix.png')
 plt.show()
