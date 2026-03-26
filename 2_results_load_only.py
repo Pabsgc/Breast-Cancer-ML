@@ -55,16 +55,16 @@ print(f"Shape of y_test: {y_test.shape}\n")
 #------------------------------------------------------------------
 
 # Uncomment to use rs_model (Random Search)
-df = pd.read_csv('rs_dataframe.csv')
-model = joblib.load('rs_model.pkl')
+df = pd.read_csv('dataframes/rs_dataframe.csv')
+model = joblib.load('models/rs_model.pkl')
 
 # Uncomment to use gs_model (Grid Search)
-# df = pd.read_csv('gs_dataframe.csv')
-# model = joblib.load('gs_model.pkl')
+# df = pd.read_csv('dataframes/gs_dataframe.csv')
+# model = joblib.load('models/gs_model.pkl')
 
 # Uncomment to use bs_model (Bayesian Search)
-# df = pd.read_csv('bs_dataframe.csv')
-# model = joblib.load('bs_model.pkl')
+# df = pd.read_csv('dataframes/bs_dataframe.csv')
+# model = joblib.load('models/bs_model.pkl')
 
 os.makedirs('analysis_graphs', exist_ok=True)
 

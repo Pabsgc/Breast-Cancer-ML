@@ -82,20 +82,25 @@ print(f"Best score: {bayes_search.best_score_}")
 print(f"Best parameters: {bayes_search.best_params_}")
 
 # Download of the best model and DataFrame of the Bayesian search
-joblib.dump(bs_model, 'bs_model.pkl')
+os.makedirs('models', exist_ok=True)
+os.makedirs('dataframes', exist_ok=True)
+
+joblib.dump(bs_model, 'models/bs_model.pkl')
 print("Model saved successfully.")
 
 bs_df = pd.DataFrame(bayes_search.cv_results_)
-bs_df.to_csv('bs_dataframe.csv', index=False)
+bs_df.to_csv('dataframes/bs_dataframe.csv', index=False)
 print("Dataframe saved successfully.")
 
 # Download of the optimizer results for graphics
-joblib.dump(bayes_search.optimizer_results_[0], 'bs_optimizer_results.pkl')
+joblib.dump(bayes_search.optimizer_results_[0], 'dataframes/bs_optimizer_results.pkl')
 print("Optimizer results saved successfully.")
 
 # Loading best model and results of the Bayesian search
-# bs_df = pd.read_csv('bs_dataframe.csv')
-# bs_model = joblib.load('bs_model.pkl')
+# bs_df = pd.read_csv('dataframes/bs_dataframe.csv')
+# bs_model = joblib.load('models/bs_model.pkl')
+
+os.makedirs('bs_graphs', exist_ok=True)
 
 #------------------------------------------------------------------
 # ACCURACY SCORES
@@ -120,6 +125,7 @@ plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Confusion Matrix of RF')
 plt.tight_layout()
+plt.savefig('bs_graphs/bs_confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -133,8 +139,6 @@ print(f"F1-Score: {f1_score(y_train, y_train_pred)}")
 #------------------------------------------------------------------
 # SKOPT CONVERGENCE PLOT
 #------------------------------------------------------------------
-
-os.makedirs('bs_graphs', exist_ok=True)
 
 plt.figure(figsize=(18, 12))
 plot_convergence(bayes_search.optimizer_results_[0])

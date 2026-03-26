@@ -79,16 +79,19 @@ print(f"Best score: {grid_search.best_score_}")
 print(f"Best parameters: {grid_search.best_params_}")
 
 # Download of the best model and DataFrame of the grid search
-joblib.dump(gs_model, 'gs_model.pkl')
+os.makedirs('models', exist_ok=True)
+os.makedirs('dataframes', exist_ok=True)
+
+joblib.dump(gs_model, 'models/gs_model.pkl')
 print("Model saved successfully.")
 
 gs_df = pd.DataFrame(grid_search.cv_results_)
-gs_df.to_csv('gs_dataframe.csv', index=False)
+gs_df.to_csv('dataframes/gs_dataframe.csv', index=False)
 print("Dataframe saved successfully.")
 
 # Loading best model and results of the grid search
-# gs_df = pd.read_csv('gs_dataframe.csv')
-# gs_model = joblib.load('gs_model.pkl')
+# gs_df = pd.read_csv('dataframes/gs_dataframe.csv')
+# gs_model = joblib.load('models/gs_model.pkl')
 
 os.makedirs('gs_graphs', exist_ok=True)
 

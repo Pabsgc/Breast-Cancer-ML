@@ -14,6 +14,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.inspection import permutation_importance
 import shap
+import os
 
 #------------------------------------------------------------------
 # MODEL & DATAFRAME LOADING
@@ -74,6 +75,8 @@ print(f"Shape of y_test: {y_test.shape}")
 # Random Forest Classifier with constant hyperparameters
 rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=1, random_state=42)
 
+os.makedirs('analysis_graphs', exist_ok=True)
+
 #------------------------------------------------------------------
 # FEATURE IMPORTANCE GRAPH
 #------------------------------------------------------------------
@@ -106,6 +109,7 @@ for index, value in enumerate(feature_importance_df['Importance']):
     plt.text(value, index, f' {value:.3f}', va='center')
 
 plt.tight_layout()
+plt.savefig('analysis_graphs/feature_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -139,6 +143,7 @@ plt.title("Final Validation: Permutation Importance (On X_test)", fontsize=15)
 plt.xlabel("Drop in F1-Score when shuffling the variable")
 plt.tight_layout()
 plt.grid(axis='y', linestyle='--', alpha=0.6)
+plt.savefig('analysis_graphs/permutation_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -153,6 +158,7 @@ plt.figure(figsize=(12, 10))
 sns.heatmap(corr_matrix, annot=True, cmap='inferno', center=0.5, fmt=".2f", linewidths=0.5)
 plt.title("Heatmap: Linear Dependency between Top Features", fontsize=15)
 plt.tight_layout()
+plt.savefig('analysis_graphs/correlation_heatmap.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -167,6 +173,7 @@ best_4 = feature_importance_df['Feature'].head(4).tolist()
 sns.pairplot(df_temp, vars=best_4, hue='target', palette='husl', diag_kind='kde', plot_kws={'alpha': 0.5})
 plt.suptitle("Visual Interaction: How groups separate according to combinations", y=1.02)
 plt.tight_layout()
+plt.savefig('analysis_graphs/pairplot.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -197,6 +204,7 @@ else:
 # If X_test is a DataFrame, SHAP extracts the names automatically.
 # If it's a Numpy Array, use feature_names=data.feature_names
 shap.summary_plot(shap_values_to_plot, X_test, feature_names=dataset.feature_names)
+plt.savefig('analysis_graphs/beeswarm_plot.png')
 
 #------------------------------------------------------------------
 # FORCE PLOT GRAPH
@@ -233,13 +241,14 @@ else:
 
 # 5. DRAW (Using the low-level function that never fails)
 shap.initjs()
-shap.force_plot(
+force_plot_html = shap.force_plot(
     base_val,
     patient_shap,
     patient_data,
     feature_names=list(dataset.feature_names),
     link='logit'
 )
+shap.save_html('analysis_graphs/force_plot.html', force_plot_html)
 
 #------------------------------------------------------------------
 # DEPENDENCE PLOT GRAPH
@@ -277,6 +286,7 @@ shap.dependence_plot(
     X_df.values,
     feature_names=dataset.feature_names.tolist()
 )
+plt.savefig('analysis_graphs/dependence_plot.png')
 
 #------------------------------------------------------------------
 # WATERFALL PLOT GRAPH
@@ -304,6 +314,7 @@ exp = shap.Explanation(
 )
 
 shap.plots.waterfall(exp)
+plt.savefig('analysis_graphs/waterfall_plot.png')
 
 #------------------------------------------------------------------
 # RESULTS & PREDICTIONS

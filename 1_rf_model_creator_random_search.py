@@ -81,16 +81,19 @@ print(f"Best F1 score: {random_search.best_score_}\n")
 print(f"Best Parameters: {random_search.best_params_}\n")
 
 # Download of the best model and DataFrame of the random search
-joblib.dump(rs_model, 'rs_model.pkl')
+os.makedirs('models', exist_ok=True)
+os.makedirs('dataframes', exist_ok=True)
+
+joblib.dump(rs_model, 'models/rs_model.pkl')
 print("Model saved successfully.\n")
 
 rs_df = pd.DataFrame(random_search.cv_results_)
-rs_df.to_csv('rs_dataframe.csv', index=False)
+rs_df.to_csv('dataframes/rs_dataframe.csv', index=False)
 print("Dataframe saved successfully.\n")
 
 # Loading best model and results of the random search
-# rs_df = pd.read_csv('rs_dataframe.csv')
-# rs_model = joblib.load('rs_model.pkl')
+# rs_df = pd.read_csv('dataframes/rs_dataframe.csv')
+# rs_model = joblib.load('models/rs_model.pkl')
 
 os.makedirs('rs_graphs', exist_ok=True)
 
