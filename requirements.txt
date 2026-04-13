@@ -7,3 +7,9 @@ joblib==1.5.3
 seaborn==0.13.2
 shap==0.51.0
 opensmile==2.6.0
+librosa==0.11.0
+pydub==0.25.1
+pyannote.audio==4.0.4
+# ffmpeg is not a Python package, but we can include it as a dependency for users to install separately. 
+# The needed shared build of ffmpeg can be downloaded from gyan.dev.
+# The bin/ directory should be added to the system PATH or referenced directly in the code.

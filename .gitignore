@@ -37,5 +37,12 @@ out/
 *.swp
 *.swo
 
+# Audio folders
+audio_input/
+audio_output/
+
+# ffmpeg folder
+
+
 # Git itself
 *.orig
