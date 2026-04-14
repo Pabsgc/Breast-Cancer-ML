@@ -80,7 +80,7 @@ parameters = ['param_n_estimators', 'param_max_depth', 'param_min_samples_split'
 
 plt.figure()
 plt.subplots_adjust(hspace=0.5, wspace=0.3)
-plt.suptitle("Impacto de Hiperparámetros en el F1-Score Medio", fontsize=18, y=0.95)
+plt.suptitle("Impact of Hyperparameters on Mean F1-Score", fontsize=18, y=0.95)
 
 for i, param in enumerate(parameters):
 

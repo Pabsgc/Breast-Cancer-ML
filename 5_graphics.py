@@ -320,12 +320,12 @@ plt.savefig('analysis_graphs/waterfall_plot.png')
 # RESULTS & PREDICTIONS
 #------------------------------------------------------------------
 
-# Resultados finales de modelo potimizado con X_test e y_test
+# Final results of the optimized model with X_test and y_test
 print(model.score(X_test, y_test))
 
-# Predicciónes por paciente:
+# Predictions by patient:
 print(model.predict_proba(X_test))
 
-# Predicción de paciente concreto:
+# Prediction for specific patient:
 # i=5
-# print("Predicción directa del modelo:", model.predict_proba(X_test[i:i+1]))
+# print("Direct model prediction:", model.predict_proba(X_test[i:i+1]))

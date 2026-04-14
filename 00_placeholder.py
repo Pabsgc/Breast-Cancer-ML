@@ -1,5 +1,5 @@
-# 2. DIARIZACIÓN Y LIMPIEZA
-print("2. Ejecutando Diarización...")
+# 2. DIARIZATION AND CLEANUP
+print("2. Running diarization...")
 
 pipeline = Pipeline.from_pretrained("pyannote/speaker-diarization-3.1", use_auth_token=HF_TOKEN)
     
@@ -38,8 +38,8 @@ for f in os.listdir(OUTPUT_DIR):
 if snr_results:
     pd.DataFrame(snr_results).to_csv(SNR_LOG, index=False)
 
-# 4. EXTRACCIÓN CON OPENSMILE
-print("4. Extrayendo características eGeMAPS...")
+# 4. EXTRACTION WITH OPENSMILE
+print("4. Extracting eGeMAPS features...")
 smile = opensmile.Smile(
     feature_set=opensmile.FeatureSet.eGeMAPS,
     feature_level=opensmile.FeatureLevel.Functionals,
