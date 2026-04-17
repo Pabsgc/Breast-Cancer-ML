@@ -18,29 +18,38 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 import os
 
 #------------------------------------------------------------------
-# DOWNLOAD & PREPARATION OF THE DATASET
+# PREPARATION OF THE DATASET
 #------------------------------------------------------------------
-# Number of classes: 2 (Malignant (M), Benign (B))
-# Data per class: 212(M), 357(B)
-# Total: 569
-# Dimensionality: 30
+# Number of classes: 2 (Urgent (M), Non-Urgent (B))
+# Data per class: *************
+# Total: *************
+# Dimensionality: 88
 # Data type: Real and Positive
 #------------------------------------------------------------------
 
-# Loading the breast cancer wisconsin dataset from sklearn
-dataset = load_breast_cancer()
+# Loading extracted features dataset from CSV
+dataset = pd.read_csv('dataset/feature_extraction_dataset.csv')
 print(dataset.keys()) 
 
 # Data / Target Separation
-X, y = dataset["data"], dataset["target"]
-print(X.shape)
-print(y.shape)
+# X keeps everything except 'label' and 'filename' columns
+y = dataset['label']
+X = dataset.drop(columns=['label', 'filename'])
+
+# Dataset overview
+print(f"X shape (samples, features): {X.shape}")
 print(f"Type of X: {type(X)}")
+print(f"y shape (labels): {y.shape}")
 print(f"Type of y: {type(y)}")
 
-# Patient 0 data and diagnosis
-print(f"Patient 0 data: {X[0]}")
-print(f"Patient 0 diagnosis: {y[0]}")
+# Patient 0 data (using .iloc for pandas indexing)
+print(f"Patient 0 data: {X.iloc[0]}")
+print(f"Patient 0 diagnosis: {y.iloc[0]}")
+
+# Check for NaNs
+if X.isnull().values.any():
+    print("Warning: NaNs found. Filling with 0.")
+    X = X.fillna(0)
 
 #------------------------------------------------------------------
 # DATASET SPLITTING

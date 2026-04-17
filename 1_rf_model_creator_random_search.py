@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.datasets import load_breast_cancer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
@@ -13,31 +12,6 @@ from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import precision_score, recall_score, f1_score
 import os
-
-#------------------------------------------------------------------
-# DOWNLOAD & PREPARATION OF THE DATASET
-#------------------------------------------------------------------
-# Number of classes: 2 (Malignant (M), Benign (B))
-# Data per class: 212(M), 357(B)
-# Total: 569
-# Dimensionality: 30
-# Data type: Real and Positive
-#------------------------------------------------------------------
-
-# Loading the breast cancer wisconsin dataset from sklearn
-# dataset = load_breast_cancer()
-# print(dataset.keys()) 
-
-# # Data / Target Separation
-# X, y = dataset["data"], dataset["target"]
-# print(X.shape)
-# print(y.shape)
-# print(f"Type of X: {type(X)}")
-# print(f"Type of y: {type(y)}")
-
-# # Patient 0 data and diagnosis
-# print(f"Patient 0 data: {X[0]}")
-# print(f"Patient 0 diagnosis: {y[0]}")
 
 #------------------------------------------------------------------
 # PREPARATION OF THE DATASET
