@@ -25,19 +25,53 @@ import os
 #------------------------------------------------------------------
 
 # Loading the breast cancer wisconsin dataset from sklearn
-dataset = load_breast_cancer()
+# dataset = load_breast_cancer()
+# print(dataset.keys()) 
+
+# # Data / Target Separation
+# X, y = dataset["data"], dataset["target"]
+# print(X.shape)
+# print(y.shape)
+# print(f"Type of X: {type(X)}")
+# print(f"Type of y: {type(y)}")
+
+# # Patient 0 data and diagnosis
+# print(f"Patient 0 data: {X[0]}")
+# print(f"Patient 0 diagnosis: {y[0]}")
+
+#------------------------------------------------------------------
+# PREPARATION OF THE DATASET
+#------------------------------------------------------------------
+# Number of classes: 2 (Urgent (M), Non-Urgent (B))
+# Data per class: *************
+# Total: *************
+# Dimensionality: 88
+# Data type: Real and Positive
+#------------------------------------------------------------------
+
+# Loading extracted features dataset from CSV
+dataset = pd.read_csv('dataset/feature_extraction_dataset.csv')
 print(dataset.keys()) 
 
 # Data / Target Separation
-X, y = dataset["data"], dataset["target"]
-print(X.shape)
-print(y.shape)
+# X keeps everything except 'label' and 'filename' columns
+y = dataset['label']
+X = dataset.drop(columns=['label', 'filename'])
+
+# Dataset overview
+print(f"X shape (samples, features): {X.shape}")
 print(f"Type of X: {type(X)}")
+print(f"y shape (labels): {y.shape}")
 print(f"Type of y: {type(y)}")
 
-# Patient 0 data and diagnosis
-print(f"Patient 0 data: {X[0]}")
-print(f"Patient 0 diagnosis: {y[0]}")
+# Patient 0 data (using .iloc for pandas indexing)
+print(f"Patient 0 data: {X.iloc[0]}")
+print(f"Patient 0 diagnosis: {y.iloc[0]}")
+
+# Check for NaNs
+if X.isnull().values.any():
+    print("Warning: NaNs found. Filling with 0.")
+    X = X.fillna(0)
 
 #------------------------------------------------------------------
 # DATASET SPLITTING
@@ -74,10 +108,10 @@ rs_params = {
     'min_impurity_decrease': [0.0, 0.01, 0.03, 0.05], # Min impurity decrease for node splitting
 }
 
-random_search = RandomizedSearchCV(rf, rs_params, n_iter=200, cv=5, random_state=42, scoring='f1') # scoring=[f1,recall,precission,accuracy]
+random_search = RandomizedSearchCV(rf, rs_params, n_iter=200, cv=5, random_state=42, scoring='recall') # scoring=[f1,recall,precission,accuracy]
 random_search.fit(X_train, y_train)
 rs_model = random_search.best_estimator_ 
-print(f"Best F1 score: {random_search.best_score_}\n") 
+print(f"Best Recall score: {random_search.best_score_}\n")
 print(f"Best Parameters: {random_search.best_params_}\n")
 
 # Download of the best model and DataFrame of the random search
@@ -108,9 +142,6 @@ parameters = ['param_n_estimators', 'param_max_depth', 'param_min_samples_split'
               'param_ccp_alpha', 'param_criterion', 'param_max_features', 'param_min_impurity_decrease']
 
 plt.figure()
-plt.subplots_adjust(hspace=0.5, wspace=0.3)
-plt.suptitle("Impacto de Hiperparámetros en el F1-Score Medio", fontsize=18, y=0.95)
-
 for i, param in enumerate(parameters):
 
     plt.subplot(4, 2, i + 1)
@@ -161,9 +192,9 @@ for i, param in enumerate(parameters):
         label='Best Model'
     )
 
-    plt.title(f'F1-Score vs {param.replace("param_", "")}', fontsize=10, fontweight='bold')
+    plt.title(f'Recall vs {param.replace("param_", "")}', fontsize=10, fontweight='bold')
     plt.xlabel("")
-    plt.ylabel('Mean F1', fontsize=10)
+    plt.ylabel('Mean Recall', fontsize=10)
     plt.legend(fontsize=6)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 

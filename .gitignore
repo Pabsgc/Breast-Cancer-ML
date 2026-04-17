@@ -40,9 +40,11 @@ out/
 # Audio folders
 audio_input/
 audio_output/
+audio_openSMILE/
+dataset/
 
-# ffmpeg folder
-
+# Redundant files
+9_placeholder.py
 
 # Git itself
 *.orig
