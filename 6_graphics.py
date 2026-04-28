@@ -162,8 +162,16 @@ plt.show()
 top_features = feature_importance_df['Feature'].head(10).tolist()
 corr_matrix = pd.DataFrame(X_train, columns=X.columns)[top_features].corr()
 
+# Get the min and max values for proper color scaling
+vmin = corr_matrix.values.min()
+vmax = corr_matrix.values.max()
+# Center the colormap at 0 (so white is at 0)
+abs_max = max(abs(vmin), abs(vmax))
+
 plt.figure(figsize=(12, 10))
-sns.heatmap(corr_matrix, annot=True, cmap='inferno', center=0.5, fmt=".2f", linewidths=0.5)
+# Create a mask for the upper triangle (excluding diagonal)
+mask = np.triu(np.ones_like(corr_matrix, dtype=bool), k=1)
+sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-abs_max, vmax=abs_max, center=0, fmt=".2f", linewidths=0.5, mask=mask)
 plt.title("Heatmap: Linear Dependency between Top Features", fontsize=15)
 plt.tight_layout()
 plt.savefig('analysis_graphs/correlation_heatmap.png')
