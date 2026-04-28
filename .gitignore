@@ -45,6 +45,7 @@ dataset/
 
 # Redundant files
 9_placeholder.py
+X_rf_prototype.py
 
 # Git itself
 *.orig
