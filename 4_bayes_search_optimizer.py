@@ -83,7 +83,7 @@ space = {
     'min_impurity_decrease': Real(0.0, 0.006) 
 }
 
-bayes_search = BayesSearchCV(rf, space, cv=5, scoring='f1', n_iter=32, verbose=2, random_state=42, n_jobs=-1)
+bayes_search = BayesSearchCV(rf, space, cv=5, scoring='recall', n_iter=32, verbose=2, random_state=42, n_jobs=-1)
 bayes_search.fit(X_train, y_train)
 bs_model = bayes_search.best_estimator_
 print(f"Best score: {bayes_search.best_score_}")
@@ -152,7 +152,7 @@ plt.figure(figsize=(18, 12))
 plot_convergence(bayes_search.optimizer_results_[0])
 plt.title('Bayesian Search Convergence Plot')
 plt.xlabel('Number of Iterations')
-plt.ylabel('Best F1 Score')
+plt.ylabel('Best Recall Score')
 plt.tight_layout(pad=3.5)
 plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
 plt.savefig('bs_graphs/bayes_convergence_plot.png')

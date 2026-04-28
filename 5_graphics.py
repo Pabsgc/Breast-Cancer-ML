@@ -20,16 +20,16 @@ import os
 #------------------------------------------------------------------
 
 # Uncomment to use rs_model (Random Search)
-df = pd.read_csv('rs_dataframe.csv')
-model = joblib.load('rs_model.pkl')
+# df = pd.read_csv('dataframes/rs_dataframe.csv')
+# model = joblib.load('models/rs_model.pkl')
 
 # Uncomment to use gs_model (Grid Search)
-# df = pd.read_csv('gs_dataframe.csv')
-# model = joblib.load('gs_model.pkl')
+# df = pd.read_csv('dataframes/gs_dataframe.csv')
+# model = joblib.load('models/gs_model.pkl')
 
 # Uncomment to use bs_model (Bayesian Search)
-# df = pd.read_csv('bs_dataframe.csv')
-# model = joblib.load('bs_model.pkl')
+df = pd.read_csv('dataframes/bs_dataframe.csv')
+model = joblib.load('models/bs_model.pkl')
 
 #------------------------------------------------------------------
 # PREPARATION OF THE DATASET
@@ -89,7 +89,7 @@ os.makedirs('analysis_graphs', exist_ok=True)
 # FEATURE IMPORTANCE GRAPH
 #------------------------------------------------------------------
 
-feature_names = dataset.feature_names
+feature_names = X.columns
 importances = model.feature_importances_
 
 # DataFrame for bar plot
@@ -133,12 +133,12 @@ result = permutation_importance(
 )
 
 # 2. Organize the results
-feature_names = dataset.feature_names
+feature_names = X.columns
 sorted_idx = result.importances_mean.argsort()
 
 perm_df = pd.DataFrame({
     'Variable': [feature_names[i] for i in sorted_idx],
-    'Mean_Importance': result.importances_mean[sorted_idx], # Average value of F1 drop (performance)
+    'Mean_Importance': result.importances_mean[sorted_idx], # Average value of recall drop (performance)
     'Std_Deviation': result.importances_std[sorted_idx]
 })
 
@@ -148,7 +148,7 @@ plt.barh(perm_df['Variable'], perm_df['Mean_Importance'],
          xerr=perm_df['Std_Deviation'], color='mediumseagreen', edgecolor='xkcd:darkgreen', ecolor='xkcd:darkgreen', capsize=5)
 
 plt.title("Final Validation: Permutation Importance (On X_test)", fontsize=15)
-plt.xlabel("Drop in F1-Score when shuffling the variable")
+plt.xlabel("Drop in Recall when shuffling the variable")
 plt.tight_layout()
 plt.grid(axis='y', linestyle='--', alpha=0.6)
 plt.savefig('analysis_graphs/permutation_importance.png')
@@ -160,7 +160,7 @@ plt.show()
 
 # Select the top 10 features from the model to avoid cluttering the map
 top_features = feature_importance_df['Feature'].head(10).tolist()
-corr_matrix = pd.DataFrame(X_train, columns=dataset.feature_names)[top_features].corr()
+corr_matrix = pd.DataFrame(X_train, columns=X.columns)[top_features].corr()
 
 plt.figure(figsize=(12, 10))
 sns.heatmap(corr_matrix, annot=True, cmap='inferno', center=0.5, fmt=".2f", linewidths=0.5)
@@ -174,7 +174,7 @@ plt.show()
 #------------------------------------------------------------------
 
 # Create a temporary DataFrame with the 4 best features and actual diagnosis
-df_temp = pd.DataFrame(X_train, columns=dataset.feature_names)
+df_temp = pd.DataFrame(X_train, columns=X.columns)
 df_temp['target'] = y_train
 best_4 = feature_importance_df['Feature'].head(4).tolist()
 
@@ -211,7 +211,7 @@ else:
 # 4. Plot ensuring X_test matches
 # If X_test is a DataFrame, SHAP extracts the names automatically.
 # If it's a Numpy Array, use feature_names=data.feature_names
-shap.summary_plot(shap_values_to_plot, X_test, feature_names=dataset.feature_names)
+shap.summary_plot(shap_values_to_plot, X_test, feature_names=X.columns)
 plt.savefig('analysis_graphs/beeswarm_plot.png')
 
 #------------------------------------------------------------------
@@ -219,7 +219,7 @@ plt.savefig('analysis_graphs/beeswarm_plot.png')
 #------------------------------------------------------------------
 
 # 1. Choose the patient (index 0)
-i = 13
+i = 0
 
 # 2. Extract the BASE VALUE (E[f(x)])
 # If explainer.expected_value is a list, take index 1 (Malignant)
@@ -253,7 +253,7 @@ force_plot_html = shap.force_plot(
     base_val,
     patient_shap,
     patient_data,
-    feature_names=list(dataset.feature_names),
+    feature_names=list(X.columns),
     link='logit'
 )
 shap.save_html('analysis_graphs/force_plot.html', force_plot_html)
@@ -263,7 +263,7 @@ shap.save_html('analysis_graphs/force_plot.html', force_plot_html)
 #------------------------------------------------------------------
 
 # 1. Ensure X_test is a clean DataFrame
-X_df = pd.DataFrame(X_test, columns=dataset.feature_names)
+X_df = pd.DataFrame(X_test, columns=X.columns)
 
 # 2. Recalculate SHAP in the most compatible way
 # Use TreeExplainer directly on the best model
@@ -286,13 +286,13 @@ else:
 
 # 4. The dependency plot WITHOUT RISKS
 # Use the numeric index directly on the matrix we just cleaned
-idx = list(dataset.feature_names).index("worst perimeter")
+idx = list(X.columns).index("mfcc1_sma3_amean")
 
 shap.dependence_plot(
     idx,
     shap_v_final,
     X_df.values,
-    feature_names=dataset.feature_names.tolist()
+    feature_names=X.columns.tolist()
 )
 plt.savefig('analysis_graphs/dependence_plot.png')
 
@@ -301,24 +301,35 @@ plt.savefig('analysis_graphs/dependence_plot.png')
 #------------------------------------------------------------------
 
 explainer = shap.TreeExplainer(model)
-# 1. KernelExplainer instead of TreeExplainer
+# ---KernelExplainer instead of TreeExplainer---
 # TreeExplainer sometimes fails with models loaded from disk.
 # KernelExplainer is slower but INFALLIBLE because it treats the model as a black box.
 # Use a sample of X_train as background shap.sample(X_train, 10) (or X_test if small)
-#explainer = shap.KernelExplainer(model.predict_proba, X_test)
+# explainer = shap.KernelExplainer(model.predict_proba, X_test)
 
-# 2. Calculate for patient i
-i = 13
-# Only calculate for ONE patient so it doesn't take forever
-shap_values_single = explainer.shap_values(X_test[i:i+1])
+i = 0
+x_instance = X_test.iloc[[i]]
 
-# 3. Create the explanation
-# Note: In KernelExplainer, the output is [samples, features, classes]
+shap_values_single = explainer.shap_values(x_instance)
+
+if isinstance(shap_values_single, list):
+    values = shap_values_single[1].flatten()
+    base = explainer.expected_value[1]
+else:
+    values = shap_values_single.flatten()
+    base = explainer.expected_value
+
+# 🔥 FIX CLAVE
+if isinstance(base, (list, np.ndarray)):
+    base = float(np.array(base).flatten()[0])
+else:
+    base = float(base)
+
 exp = shap.Explanation(
-    values=shap_values_single[0][:, 1], # Values for class 1 (Malignant)
-    base_values=explainer.expected_value[1],
-    data=X_test[i],
-    feature_names=dataset.feature_names
+    values=values,
+    base_values=base,
+    data=x_instance.values[0],
+    feature_names=X.columns
 )
 
 shap.plots.waterfall(exp)

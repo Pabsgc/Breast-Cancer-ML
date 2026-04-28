@@ -88,7 +88,7 @@ parameters = ['param_n_estimators', 'param_max_depth', 'param_min_samples_split'
 
 plt.figure()
 plt.subplots_adjust(hspace=0.5, wspace=0.3)
-plt.suptitle("Impact of Hyperparameters on Mean F1-Score", fontsize=18, y=0.95)
+plt.suptitle("Impact of Hyperparameters on Mean Recall", fontsize=18, y=0.95)
 
 for i, param in enumerate(parameters):
 
@@ -140,9 +140,9 @@ for i, param in enumerate(parameters):
         label='Best Model'
     )
 
-    plt.title(f'F1-Score vs {param.replace("param_", "")}', fontsize=10, fontweight='bold')
+    plt.title(f'Recall vs {param.replace("param_", "")}', fontsize=10, fontweight='bold')
     plt.xlabel("")
-    plt.ylabel('Mean F1', fontsize=10)
+    plt.ylabel('Mean Recall', fontsize=10)
     plt.legend(fontsize=6)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 

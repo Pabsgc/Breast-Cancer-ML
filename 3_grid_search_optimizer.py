@@ -80,7 +80,7 @@ gs_params = {
     'min_impurity_decrease': [0.0, 0.002, 0.004, 0.006] 
 }
 
-grid_search = GridSearchCV(rf, gs_params, cv=5, scoring='f1', verbose=2)
+grid_search = GridSearchCV(rf, gs_params, cv=5, scoring='recall', verbose=2)
 grid_search.fit(X_train, y_train)
 gs_model = grid_search.best_estimator_
 print(f"Best score: {grid_search.best_score_}")
