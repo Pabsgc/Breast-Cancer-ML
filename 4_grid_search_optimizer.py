@@ -97,12 +97,6 @@ gs_df = pd.DataFrame(grid_search.cv_results_)
 gs_df.to_csv('dataframes/gs_dataframe.csv', index=False)
 print("Dataframe saved successfully.")
 
-# Loading best model and results of the grid search
-# gs_df = pd.read_csv('dataframes/gs_dataframe.csv')
-# gs_model = joblib.load('models/gs_model.pkl')
-
-os.makedirs('gs_graphs', exist_ok=True)
-
 #------------------------------------------------------------------
 # ACCURACY SCORES
 #------------------------------------------------------------------
@@ -115,6 +109,8 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 # CONFUSION MATRIX
 #------------------------------------------------------------------
 
+os.makedirs('graphs/gs_graphs', exist_ok=True)
+
 y_train_pred = cross_val_predict(gs_model, X_train, y_train, cv=5)
 cm = confusion_matrix(y_train, y_train_pred)
 
@@ -126,7 +122,7 @@ plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Cross-Validation Confusion Matrix')
 plt.tight_layout()
-plt.savefig('gs_graphs/gs_confusion_matrix.png')
+plt.savefig('graphs/gs_graphs/gs_confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------

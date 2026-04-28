@@ -4,7 +4,9 @@ import pandas as pd
 import numpy as np
 import opensmile
 
-# --- CONFIG ---
+#------------------------------------------------------------------
+# CONFIGURATION
+#------------------------------------------------------------------
 INPUT_DIR = "audio_input"
 OUTPUT_DIR = "audio_output"
 

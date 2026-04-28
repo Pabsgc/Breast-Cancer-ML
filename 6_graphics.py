@@ -83,11 +83,11 @@ print(f"Shape of y_test: {y_test.shape}")
 # Random Forest Classifier with constant hyperparameters
 rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=1, random_state=42)
 
-os.makedirs('analysis_graphs', exist_ok=True)
-
 #------------------------------------------------------------------
 # FEATURE IMPORTANCE GRAPH
 #------------------------------------------------------------------
+
+os.makedirs('graphs/analysis_graphs', exist_ok=True)
 
 feature_names = X.columns
 importances = model.feature_importances_
@@ -117,7 +117,7 @@ for index, value in enumerate(feature_importance_df['Importance']):
     plt.text(value, index, f' {value:.3f}', va='center')
 
 plt.tight_layout()
-plt.savefig('analysis_graphs/feature_importance.png')
+plt.savefig('graphs/analysis_graphs/feature_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -151,7 +151,7 @@ plt.title("Final Validation: Permutation Importance (On X_test)", fontsize=15)
 plt.xlabel("Drop in Recall when shuffling the variable")
 plt.tight_layout()
 plt.grid(axis='y', linestyle='--', alpha=0.6)
-plt.savefig('analysis_graphs/permutation_importance.png')
+plt.savefig('graphs/analysis_graphs/permutation_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -174,7 +174,7 @@ mask = np.triu(np.ones_like(corr_matrix, dtype=bool), k=1)
 sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', vmin=-abs_max, vmax=abs_max, center=0, fmt=".2f", linewidths=0.5, mask=mask)
 plt.title("Heatmap: Linear Dependency between Top Features", fontsize=15)
 plt.tight_layout()
-plt.savefig('analysis_graphs/correlation_heatmap.png')
+plt.savefig('graphs/analysis_graphs/correlation_heatmap.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -189,7 +189,7 @@ best_4 = feature_importance_df['Feature'].head(4).tolist()
 sns.pairplot(df_temp, vars=best_4, hue='target', palette='husl', diag_kind='kde', plot_kws={'alpha': 0.5})
 plt.suptitle("Visual Interaction: How groups separate according to combinations", y=1.02)
 plt.tight_layout()
-plt.savefig('analysis_graphs/pairplot.png')
+plt.savefig('graphs/analysis_graphs/pairplot.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -220,7 +220,7 @@ else:
 # If X_test is a DataFrame, SHAP extracts the names automatically.
 # If it's a Numpy Array, use feature_names=data.feature_names
 shap.summary_plot(shap_values_to_plot, X_test, feature_names=X.columns)
-plt.savefig('analysis_graphs/beeswarm_plot.png')
+plt.savefig('graphs/analysis_graphs/beeswarm_plot.png')
 plt.close()
 
 #------------------------------------------------------------------
@@ -267,7 +267,7 @@ force_plot_html = shap.force_plot(
 )
 
 # Save HTML manually to avoid Windows file path issues
-with open('analysis_graphs/force_plot.html', 'w', encoding='utf-8') as f:
+with open('graphs/analysis_graphs/force_plot.html', 'w', encoding='utf-8') as f:
     f.write(force_plot_html.html())
 plt.close()  # Close any figure created by force_plot
 
@@ -307,7 +307,7 @@ shap.dependence_plot(
     X_df.values,
     feature_names=X.columns.tolist()
 )
-plt.savefig('analysis_graphs/dependence_plot.png')
+plt.savefig('graphs/analysis_graphs/dependence_plot.png')
 plt.close()
 
 #------------------------------------------------------------------
@@ -344,7 +344,7 @@ exp = shap.Explanation(
 
 # Plot and save
 shap.plots.waterfall(exp, show=False)
-plt.savefig('analysis_graphs/waterfall_plot.png', bbox_inches='tight', dpi=150)
+plt.savefig('graphs/analysis_graphs/waterfall_plot.png', bbox_inches='tight', dpi=150)
 plt.close()
 
 #------------------------------------------------------------------

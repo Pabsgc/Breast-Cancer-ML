@@ -1,9 +1,3 @@
-"""
-Feature Extraction using openSMILE with eGeMAPS v2.0
-Extracts 88 features from audio files in audio_openSMILE/0 and audio_openSMILE/1
-Creates a labeled dataset for Random Forest classification
-"""
-
 import os
 import subprocess
 import pandas as pd
@@ -12,6 +6,10 @@ from pathlib import Path
 import tempfile
 import logging
 from tqdm import tqdm
+
+#------------------------------------------------------------------
+# CONFIGURATION
+#------------------------------------------------------------------
 
 # Configuration
 AUDIO_FOLDERS = {
@@ -28,6 +26,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+#------------------------------------------------------------------
+# HELPER FUNCTIONS
+#------------------------------------------------------------------
 
 def check_opensmile_installation():
     """Check if openSMILE is installed and accessible."""
@@ -250,39 +251,35 @@ def load_dataset(input_path=OUTPUT_FILE):
         logger.error(f"Error loading dataset: {str(e)}")
         return None
 
+#------------------------------------------------------------------
+# MAIN EXECUTION
+#------------------------------------------------------------------
 
-def main():
-    """Main execution function."""
+logger.info("=" * 60)
+logger.info("Starting Feature Extraction with openSMILE eGeMAPS v2.0")
+logger.info("=" * 60)
+
+# Check openSMILE installation
+if not check_opensmile_installation():
+    logger.warning("Command-line openSMILE not found. Will attempt to use python-opensmile library.")
+
+# Build dataset
+logger.info("\nBuilding dataset...")
+dataset = build_dataset()
+
+if dataset is None:
+    logger.error("Failed to build dataset")
+    exit(1)
+
+# Save dataset
+logger.info("\nSaving dataset...")
+success = save_dataset(dataset, OUTPUT_FILE)
+
+if success:
+    logger.info("\n" + "=" * 60)
+    logger.info("Feature extraction completed successfully!")
     logger.info("=" * 60)
-    logger.info("Starting Feature Extraction with openSMILE eGeMAPS v2.0")
-    logger.info("=" * 60)
-    
-    # Check openSMILE installation
-    if not check_opensmile_installation():
-        logger.warning("Command-line openSMILE not found. Will attempt to use python-opensmile library.")
-    
-    # Build dataset
-    logger.info("\nBuilding dataset...")
-    dataset = build_dataset()
-    
-    if dataset is None:
-        logger.error("Failed to build dataset")
-        return False
-    
-    # Save dataset
-    logger.info("\nSaving dataset...")
-    success = save_dataset(dataset, OUTPUT_FILE)
-    
-    if success:
-        logger.info("\n" + "=" * 60)
-        logger.info("Feature extraction completed successfully!")
-        logger.info("=" * 60)
-        return True
-    else:
-        logger.error("Failed to save dataset")
-        return False
-
-
-if __name__ == "__main__":
-    success = main()
-    exit(0 if success else 1)
+    exit(0)
+else:
+    logger.error("Failed to save dataset")
+    exit(1)

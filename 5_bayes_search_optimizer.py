@@ -104,12 +104,6 @@ print("Dataframe saved successfully.")
 joblib.dump(bayes_search.optimizer_results_[0], 'dataframes/bs_optimizer_results.pkl')
 print("Optimizer results saved successfully.")
 
-# Loading best model and results of the Bayesian search
-# bs_df = pd.read_csv('dataframes/bs_dataframe.csv')
-# bs_model = joblib.load('models/bs_model.pkl')
-
-os.makedirs('bs_graphs', exist_ok=True)
-
 #------------------------------------------------------------------
 # ACCURACY SCORES
 #------------------------------------------------------------------
@@ -122,6 +116,8 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 # CONFUSION MATRIX
 #------------------------------------------------------------------
 
+os.makedirs('graphs/bs_graphs', exist_ok=True)
+
 y_train_pred = cross_val_predict(bs_model, X_train, y_train, cv=5)
 cm = confusion_matrix(y_train, y_train_pred)
 
@@ -133,7 +129,7 @@ plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Cross-Validation Confusion Matrix')
 plt.tight_layout()
-plt.savefig('bs_graphs/bs_confusion_matrix.png')
+plt.savefig('graphs/bs_graphs/bs_confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -155,7 +151,7 @@ plt.xlabel('Number of Iterations')
 plt.ylabel('Best Recall Score')
 plt.tight_layout(pad=3.5)
 plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
-plt.savefig('bs_graphs/bayes_convergence_plot.png')
+plt.savefig('graphs/bs_graphs/bayes_convergence_plot.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -167,7 +163,7 @@ plot_evaluations(bayes_search.optimizer_results_[0])
 plt.suptitle('Bayesian Search Evaluations Plot', fontsize=16)
 plt.tight_layout(pad=3.5)
 plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
-plt.savefig('bs_graphs/bayes_evaluations_plot.png')
+plt.savefig('graphs/bs_graphs/bayes_evaluations_plot.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -179,7 +175,7 @@ plot_objective(bayes_search.optimizer_results_[0])
 plt.suptitle('Bayesian Search Objective Plot', fontsize=16)
 plt.tight_layout(pad=3.5)
 plt.subplots_adjust(left=0.08, right=0.96, top=0.92, bottom=0.08, hspace=0.4, wspace=0.3)
-plt.savefig('bs_graphs/bayes_objective_plot.png')
+plt.savefig('graphs/bs_graphs/bayes_objective_plot.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -193,6 +189,6 @@ plt.xlabel('Number of Iterations')
 plt.ylabel('Regret')
 plt.tight_layout(pad=3.5)
 plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
-plt.savefig('bs_graphs/bayes_regret_plot.png')
+plt.savefig('graphs/bs_graphs/bayes_regret_plot.png')
 plt.show()
 

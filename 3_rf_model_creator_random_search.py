@@ -99,15 +99,11 @@ rs_df = pd.DataFrame(random_search.cv_results_)
 rs_df.to_csv('dataframes/rs_dataframe.csv', index=False)
 print("Dataframe saved successfully.\n")
 
-# Loading best model and results of the random search
-# rs_df = pd.read_csv('dataframes/rs_dataframe.csv')
-# rs_model = joblib.load('models/rs_model.pkl')
-
-os.makedirs('rs_graphs', exist_ok=True)
-
 #------------------------------------------------------------------
 # HYPERPARAMETER IMPACT ANALYSIS GRAPHICS
 #------------------------------------------------------------------
+
+os.makedirs('graphs/rs_graphs', exist_ok=True)
 
 # Winner extraction for graphics
 winner = rs_df[rs_df['rank_test_score'] == 1].iloc[0]
@@ -173,7 +169,7 @@ for i, param in enumerate(parameters):
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 
 plt.tight_layout()
-plt.savefig('rs_graphs/rs_parameter_importance.png')
+plt.savefig('graphs/rs_graphs/rs_parameter_importance.png')
 plt.show()
 
 #------------------------------------------------------------------
@@ -199,7 +195,7 @@ plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Cross-Validation Confusion Matrix')
 plt.tight_layout()
-plt.savefig('rs_graphs/rs_confusion_matrix.png')
+plt.savefig('graphs/rs_graphs/rs_confusion_matrix.png')
 plt.show()
 
 #------------------------------------------------------------------
