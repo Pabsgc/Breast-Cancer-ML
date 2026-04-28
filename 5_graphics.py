@@ -213,6 +213,7 @@ else:
 # If it's a Numpy Array, use feature_names=data.feature_names
 shap.summary_plot(shap_values_to_plot, X_test, feature_names=X.columns)
 plt.savefig('analysis_graphs/beeswarm_plot.png')
+plt.close()
 
 #------------------------------------------------------------------
 # FORCE PLOT GRAPH
@@ -256,7 +257,11 @@ force_plot_html = shap.force_plot(
     feature_names=list(X.columns),
     link='logit'
 )
-shap.save_html('analysis_graphs/force_plot.html', force_plot_html)
+
+# Save HTML manually to avoid Windows file path issues
+with open('analysis_graphs/force_plot.html', 'w', encoding='utf-8') as f:
+    f.write(force_plot_html.html())
+plt.close()  # Close any figure created by force_plot
 
 #------------------------------------------------------------------
 # DEPENDENCE PLOT GRAPH
@@ -295,45 +300,44 @@ shap.dependence_plot(
     feature_names=X.columns.tolist()
 )
 plt.savefig('analysis_graphs/dependence_plot.png')
+plt.close()
 
 #------------------------------------------------------------------
 # WATERFALL PLOT GRAPH
 #------------------------------------------------------------------
 
-explainer = shap.TreeExplainer(model)
-# ---KernelExplainer instead of TreeExplainer---
-# TreeExplainer sometimes fails with models loaded from disk.
-# KernelExplainer is slower but INFALLIBLE because it treats the model as a black box.
-# Use a sample of X_train as background shap.sample(X_train, 10) (or X_test if small)
-# explainer = shap.KernelExplainer(model.predict_proba, X_test)
-
+# 1. Choose the patient (index 0)
 i = 0
-x_instance = X_test.iloc[[i]]
 
-shap_values_single = explainer.shap_values(x_instance)
+# Use the SHAP values from the DEPENDENCE PLOT section (shap_v_final)
+# which is already properly extracted for class 1
+# Extract patient 0's SHAP values
+patient_shap_values = shap_v_final[i]
 
-if isinstance(shap_values_single, list):
-    values = shap_values_single[1].flatten()
-    base = explainer.expected_value[1]
+# Get the base value from the explainer
+if isinstance(explainer.expected_value, (list, np.ndarray)):
+    base_val = explainer.expected_value[1]
 else:
-    values = shap_values_single.flatten()
-    base = explainer.expected_value
+    base_val = explainer.expected_value
 
-# 🔥 FIX CLAVE
-if isinstance(base, (list, np.ndarray)):
-    base = float(np.array(base).flatten()[0])
+# Ensure base_val is a float
+if isinstance(base_val, (list, np.ndarray)):
+    base_val = float(np.array(base_val).flatten()[0])
 else:
-    base = float(base)
+    base_val = float(base_val)
 
+# Create Explanation object - use the same format that works with shap.plots.waterfall
 exp = shap.Explanation(
-    values=values,
-    base_values=base,
-    data=x_instance.values[0],
-    feature_names=X.columns
+    values=patient_shap_values,
+    base_values=base_val,
+    data=X_test.iloc[i].values,
+    feature_names=list(X.columns)
 )
 
-shap.plots.waterfall(exp)
-plt.savefig('analysis_graphs/waterfall_plot.png')
+# Plot and save
+shap.plots.waterfall(exp, show=False)
+plt.savefig('analysis_graphs/waterfall_plot.png', bbox_inches='tight', dpi=150)
+plt.close()
 
 #------------------------------------------------------------------
 # RESULTS & PREDICTIONS
