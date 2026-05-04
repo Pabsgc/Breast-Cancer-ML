@@ -14,6 +14,7 @@ from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.inspection import permutation_importance
 import shap
 import os
+import re
 
 #------------------------------------------------------------------
 # MODEL & DATAFRAME LOADING
@@ -48,6 +49,7 @@ print(dataset.keys())
 # Data / Target Separation
 # X keeps everything except 'label' and 'filename' columns
 y = dataset['label']
+filenames = dataset['filename']
 X = dataset.drop(columns=['label', 'filename'])
 
 # Dataset overview
@@ -59,6 +61,7 @@ print(f"Type of y: {type(y)}")
 # Patient 0 data (using .iloc for pandas indexing)
 print(f"Patient 0 data: {X.iloc[0]}")
 print(f"Patient 0 diagnosis: {y.iloc[0]}")
+print(f"Patient 0 filename: {filenames.iloc[0]}")
 
 # Check for NaNs
 if X.isnull().values.any():
@@ -70,11 +73,19 @@ if X.isnull().values.any():
 #------------------------------------------------------------------
 
 # Randomisation & splitting of the dataset into training and test (10%) sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+X_train, X_test, y_train, y_test, filename_train, filename_test = train_test_split(
+    X,
+    y,
+    filenames,
+    test_size=0.1,
+    random_state=42
+)
 print(f"Shape of X_train: {X_train.shape}")
 print(f"Shape of X_test: {X_test.shape}")
 print(f"Shape of y_train: {y_train.shape}")
 print(f"Shape of y_test: {y_test.shape}")
+print(f"Shape of filename_train: {filename_train.shape}")
+print(f"Shape of filename_test: {filename_test.shape}")
 
 #------------------------------------------------------------------
 # MODEL CREATION 
@@ -317,6 +328,10 @@ plt.close()
 # 1. Choose the patient (index 0)
 i = 0
 
+# Preserve traceability: get the original filename for this test sample
+patient_filename = filename_test.iloc[i]
+print(f"Generating waterfall plot for test sample index {i} -> filename: {patient_filename}")
+
 # Use the SHAP values from the DEPENDENCE PLOT section (shap_v_final)
 # which is already properly extracted for class 1
 # Extract patient 0's SHAP values
@@ -342,9 +357,12 @@ exp = shap.Explanation(
     feature_names=list(X.columns)
 )
 
-# Plot and save
+# Plot and save using filename metadata for traceability
 shap.plots.waterfall(exp, show=False)
-plt.savefig('graphs/analysis_graphs/waterfall_plot.png', bbox_inches='tight', dpi=150)
+plt.title(f"Waterfall: {patient_filename}")
+output_filename = re.sub(r'[<>:"/\\|?*]', '_', patient_filename)
+output_path = f'graphs/analysis_graphs/waterfall_plot_{output_filename}.png'
+plt.savefig(output_path, bbox_inches='tight', dpi=150)
 plt.close()
 
 #------------------------------------------------------------------
