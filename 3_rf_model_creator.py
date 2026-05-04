@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import RandomizedSearchCV
-from sklearn.model_selection import GridSearchCV
 import joblib
 import seaborn as sns
 from sklearn.model_selection import cross_val_score
@@ -111,10 +110,8 @@ winner = rs_df[rs_df['rank_test_score'] == 1].iloc[0]
 parameters = ['param_n_estimators', 'param_max_depth', 'param_min_samples_split', 'param_min_samples_leaf',
               'param_ccp_alpha', 'param_criterion', 'param_max_features', 'param_min_impurity_decrease']
 
-plt.figure()
 for i, param in enumerate(parameters):
-
-    plt.subplot(4, 2, i + 1)
+    plt.figure()
     # Sort by numeric values of the parameter for a cleaner line plot
     numeric_col = pd.to_numeric(rs_df[param], errors='coerce')
     if numeric_col.notna().any():
@@ -168,9 +165,9 @@ for i, param in enumerate(parameters):
     plt.legend(fontsize=6)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
 
-plt.tight_layout()
-plt.savefig('graphs/rs_graphs/rs_parameter_importance.png')
-plt.show()
+    plt.tight_layout()
+    plt.savefig(f'graphs/rs_graphs/rs_importance_{param.replace("param_", "")}.png')
+    plt.show()
 
 #------------------------------------------------------------------
 # ACCURACY SCORES
