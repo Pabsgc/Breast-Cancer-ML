@@ -69,19 +69,19 @@ rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=1, rando
 #------------------------------------------------------------------
 
 rs_params = {
-    'n_estimators': [50, 100, 200, 500], # Number of trees
+    'n_estimators': [100, 200, 300, 400, 500, 600, 700, 800], # Number of trees - expanded range for better exploration
     # Reduction of Overfitting
-    'max_depth': [3, 5, 10, 20, None], # Max depth of each tree
-    'min_samples_split': [2, 5, 10], # Min number of samples for node splitting
-    'min_samples_leaf': [2, 5, 10, 20], # Min number of samples per leaf
-    'ccp_alpha': [0.0, 0.001, 0.01, 0.02, 0.05], # Cost Complexity Pruning
+    'max_depth': [5, 10, 15, 20, 25, 30, None], # Max depth of each tree - added intermediate values
+    'min_samples_split': [2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15], # Min number of samples for node splitting - finer granularity
+    'min_samples_leaf': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12], # Min number of samples per leaf - include 1 for completeness
+    'ccp_alpha': [0.0, 0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2], # Cost Complexity Pruning - extended range
     # Quality of split
     'criterion': ['gini', 'entropy'], # Quality of split (Gini vs Entropy)
-    'max_features': [None, 'sqrt', 'log2', 0.5], # Number of random features per tree
-    'min_impurity_decrease': [0.0, 0.01, 0.03, 0.05], # Min impurity decrease for node splitting
+    'max_features': [None, 'sqrt', 'log2', 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], # Number of random features per tree - more options
+    'min_impurity_decrease': [0.0, 0.001, 0.005, 0.01, 0.02, 0.05, 0.1], # Min impurity decrease for node splitting - finer steps
 }
 
-random_search = RandomizedSearchCV(rf, rs_params, n_iter=200, cv=5, random_state=42, scoring='recall') # scoring=[f1,recall,precission,accuracy]
+random_search = RandomizedSearchCV(rf, rs_params, n_iter=500, cv=10, random_state=42, scoring='recall') # scoring=[f1,recall,precission,accuracy]
 random_search.fit(X_train, y_train)
 rs_model = random_search.best_estimator_ 
 print(f"Best Recall score: {random_search.best_score_}\n")
@@ -168,6 +168,7 @@ for i, param in enumerate(parameters):
     plt.tight_layout()
     plt.savefig(f'graphs/rs_graphs/rs_importance_{param.replace("param_", "")}.png')
     plt.show()
+    plt.close()
 
 #------------------------------------------------------------------
 # ACCURACY SCORES
@@ -194,6 +195,7 @@ plt.title('Cross-Validation Confusion Matrix')
 plt.tight_layout()
 plt.savefig('graphs/rs_graphs/rs_confusion_matrix.png')
 plt.show()
+plt.close()
 
 #------------------------------------------------------------------
 # PRECISION, RECALL AND F1-SCORE

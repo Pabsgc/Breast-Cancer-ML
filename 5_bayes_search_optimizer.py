@@ -131,6 +131,7 @@ plt.title('Cross-Validation Confusion Matrix')
 plt.tight_layout()
 plt.savefig('graphs/bs_graphs/bs_confusion_matrix.png')
 plt.show()
+plt.close()
 
 #------------------------------------------------------------------
 # PRECISION, RECALL AND F1-SCORE
@@ -144,7 +145,6 @@ print(f"F1-Score: {f1_score(y_train, y_train_pred)}")
 # SKOPT CONVERGENCE PLOT
 #------------------------------------------------------------------
 
-plt.figure(figsize=(18, 12))
 plot_convergence(bayes_search.optimizer_results_[0])
 plt.title('Bayesian Search Convergence Plot')
 plt.xlabel('Number of Iterations')
@@ -153,36 +153,37 @@ plt.tight_layout(pad=3.5)
 plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
 plt.savefig('graphs/bs_graphs/bayes_convergence_plot.png')
 plt.show()
+plt.close()
 
 #------------------------------------------------------------------
 # SKOPT PLOT EVALUATION
 #------------------------------------------------------------------
 
-plt.figure(figsize=(18, 12))
 plot_evaluations(bayes_search.optimizer_results_[0])
 plt.suptitle('Bayesian Search Evaluations Plot', fontsize=16)
 plt.tight_layout(pad=3.5)
 plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
 plt.savefig('graphs/bs_graphs/bayes_evaluations_plot.png')
 plt.show()
+plt.close()
 
 #------------------------------------------------------------------
 # SKOPT OBJECTIVE PLOT
 #------------------------------------------------------------------
 
-plt.figure(figsize=(20, 14))
+
 plot_objective(bayes_search.optimizer_results_[0])
 plt.suptitle('Bayesian Search Objective Plot', fontsize=16)
 plt.tight_layout(pad=3.5)
 plt.subplots_adjust(left=0.08, right=0.96, top=0.92, bottom=0.08, hspace=0.4, wspace=0.3)
 plt.savefig('graphs/bs_graphs/bayes_objective_plot.png')
 plt.show()
+plt.close()
 
 #------------------------------------------------------------------
 # SKOPT REGRET PLOT
 #------------------------------------------------------------------
 
-plt.figure(figsize=(18, 12))
 plot_regret(bayes_search.optimizer_results_[0])
 plt.title('Bayesian Search Regret Plot')
 plt.xlabel('Number of Iterations')
@@ -191,4 +192,5 @@ plt.tight_layout(pad=3.5)
 plt.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.96)
 plt.savefig('graphs/bs_graphs/bayes_regret_plot.png')
 plt.show()
+plt.close()
 

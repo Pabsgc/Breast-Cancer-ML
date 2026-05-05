@@ -109,6 +109,10 @@ feature_importance_df = pd.DataFrame({
     'Importance': importances
 }).sort_values(by='Importance', ascending=False)
 
+# Save the DataFrame to CSV for any future analysis or reference
+feature_importance_df.to_csv('dataframes/feature_importance.csv', index=False)
+print("Dataframe saved successfully.\n")
+
 plt.figure(figsize=(12, 10))
 sns.barplot(
     x='Importance',
@@ -137,7 +141,7 @@ plt.show()
 
 # 1. Calculate permutation importance.
 result = permutation_importance(
-    model, X_test, y_test, # Best model from Grid Search and validation set
+    model, X_test, y_test, # Best model and validation set
     n_repeats=10, # Returns the average of 10 shuffles
     random_state=42,
     n_jobs=-1
@@ -148,10 +152,13 @@ feature_names = X.columns
 sorted_idx = result.importances_mean.argsort()
 
 perm_df = pd.DataFrame({
-    'Variable': [feature_names[i] for i in sorted_idx],
+    'Variable': [feature_names[i] for i in sorted_idx], # Variable names sorted by importance
     'Mean_Importance': result.importances_mean[sorted_idx], # Average value of recall drop (performance)
-    'Std_Deviation': result.importances_std[sorted_idx]
+    'Std_Deviation': result.importances_std[sorted_idx] # Standard deviation of the recall drop across shuffles
 })
+
+perm_df.to_csv('dataframes/permutation_importance.csv', index=False)
+print("Dataframe saved successfully.\n")
 
 # 3. Plot (Horizontal so medical feature names are readable)
 plt.figure(figsize=(12, 10))
@@ -370,9 +377,11 @@ plt.close()
 #------------------------------------------------------------------
 
 # Final results of the optimized model with X_test and y_test
+print("Final Test Set Performance:")
 print(model.score(X_test, y_test))
 
 # Predictions by patient:
+print("Predictions by patient:")
 print(model.predict_proba(X_test))
 
 # Prediction for specific patient:
