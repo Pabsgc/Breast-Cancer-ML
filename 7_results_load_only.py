@@ -141,7 +141,7 @@ for i, param in enumerate(parameters):
     )
 
     plt.title(f'Recall vs {param.replace("param_", "")}', fontsize=10, fontweight='bold')
-    plt.xlabel("")
+    plt.xlabel(f'{param.replace("param_", "")} values', fontsize=10)
     plt.ylabel('Mean Recall', fontsize=10)
     plt.legend(fontsize=6)
     plt.grid(axis='y', linestyle='--', alpha=0.5)
@@ -154,7 +154,7 @@ plt.show()
 # ACCURACY SCORES
 #------------------------------------------------------------------
 
-acc_scores = cross_val_score(model, X_train, y_train, cv=5, scoring="accuracy")
+acc_scores = cross_val_score(model, X_train, y_train, cv=10, scoring="accuracy")
 print(f"Accuracy Scores: {acc_scores}")
 print(f"Mean Accuracy: {acc_scores.mean()}")
 
@@ -162,7 +162,7 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 # CONFUSION MATRIX
 #------------------------------------------------------------------
 
-y_train_pred = cross_val_predict(model, X_train, y_train, cv=5)
+y_train_pred = cross_val_predict(model, X_train, y_train, cv=10)
 cm = confusion_matrix(y_train, y_train_pred)
 
 plt.figure()
