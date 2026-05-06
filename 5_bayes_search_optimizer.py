@@ -83,7 +83,7 @@ space = {
     'min_impurity_decrease': Real(0.0, 0.006) 
 }
 
-bayes_search = BayesSearchCV(rf, space, cv=5, scoring='recall', n_iter=32, verbose=2, random_state=42, n_jobs=-1)
+bayes_search = BayesSearchCV(rf, space, cv=10, scoring='recall', n_iter=100, verbose=2, random_state=42, n_jobs=-1)
 bayes_search.fit(X_train, y_train)
 bs_model = bayes_search.best_estimator_
 print(f"Best score: {bayes_search.best_score_}")
@@ -108,7 +108,7 @@ print("Optimizer results saved successfully.")
 # ACCURACY SCORES
 #------------------------------------------------------------------
 
-acc_scores = cross_val_score(bs_model, X_train, y_train, cv=5, scoring="accuracy")
+acc_scores = cross_val_score(bs_model, X_train, y_train, cv=10, scoring="accuracy")
 print(f"Accuracy Scores: {acc_scores}")
 print(f"Mean Accuracy: {acc_scores.mean()}")
 
@@ -118,7 +118,7 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 
 os.makedirs('graphs/bs_graphs', exist_ok=True)
 
-y_train_pred = cross_val_predict(bs_model, X_train, y_train, cv=5)
+y_train_pred = cross_val_predict(bs_model, X_train, y_train, cv=10)
 cm = confusion_matrix(y_train, y_train_pred)
 
 plt.figure(figsize=(8, 6))

@@ -80,7 +80,7 @@ gs_params = {
     'min_impurity_decrease': [0.0, 0.002, 0.004, 0.006] 
 }
 
-grid_search = GridSearchCV(rf, gs_params, cv=5, scoring='recall', verbose=2)
+grid_search = GridSearchCV(rf, gs_params, cv=10, scoring='recall', verbose=2)
 grid_search.fit(X_train, y_train)
 gs_model = grid_search.best_estimator_
 print(f"Best score: {grid_search.best_score_}")
@@ -101,7 +101,7 @@ print("Dataframe saved successfully.")
 # ACCURACY SCORES
 #------------------------------------------------------------------
 
-acc_scores = cross_val_score(gs_model, X_train, y_train, cv=5, scoring="accuracy")
+acc_scores = cross_val_score(gs_model, X_train, y_train, cv=10, scoring="accuracy")
 print(f"Accuracy Scores: {acc_scores}")
 print(f"Mean Accuracy: {acc_scores.mean()}")
 
@@ -111,7 +111,7 @@ print(f"Mean Accuracy: {acc_scores.mean()}")
 
 os.makedirs('graphs/gs_graphs', exist_ok=True)
 
-y_train_pred = cross_val_predict(gs_model, X_train, y_train, cv=5)
+y_train_pred = cross_val_predict(gs_model, X_train, y_train, cv=10)
 cm = confusion_matrix(y_train, y_train_pred)
 
 plt.figure(figsize=(8, 6))
