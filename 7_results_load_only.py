@@ -167,8 +167,8 @@ cm = confusion_matrix(y_train, y_train_pred)
 
 plt.figure()
 sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
-            xticklabels=['Benign (Pred)', 'Malignant (Pred)'],
-            yticklabels=['Benign (Real)', 'Malignant (Real)'])
+            xticklabels=['Control (Pred)', 'Case (Pred)'],
+            yticklabels=['Control (Real)', 'Case (Real)'])
 plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Cross-Validation Confusion Matrix')

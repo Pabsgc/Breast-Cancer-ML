@@ -70,17 +70,17 @@ rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=1, rando
 #------------------------------------------------------------------
 
 gs_params = {
-    'n_estimators': [200, 300], 
-    'max_depth': [15, 20, 25, 30], 
-    'min_samples_split': [3, 4, 5, 6, 7], 
-    'min_samples_leaf': [3, 4, 5, 6, 7], 
-    'ccp_alpha': [0.005, 0.008, 0.01, 0.012, 0.015], 
-    'criterion': ['entropy'], 
-    'max_features': ['sqrt', 0.1, 0.2, 0.3, 0.4], 
-    'min_impurity_decrease': [0.0, 0.002, 0.004, 0.006] 
+    'n_estimators': [100, 200, 700, 800], 
+    'max_depth': [10, 35, 40, None], 
+    'min_samples_split': [5, 9, 10, 14, 15], 
+    'min_samples_leaf': [1, 8, 9, 10], 
+    'ccp_alpha': [0.001, 0.05, 0.2, 0.3], 
+    'criterion': ['entropy', 'gini'], 
+    'max_features': ['sqrt', 'log2', 0.1], 
+    'min_impurity_decrease': [0.0, 0.005] 
 }
 
-grid_search = GridSearchCV(rf, gs_params, cv=10, scoring='recall', verbose=2)
+grid_search = GridSearchCV(rf, gs_params, cv=10, scoring='recall')
 grid_search.fit(X_train, y_train)
 gs_model = grid_search.best_estimator_
 print(f"Best score: {grid_search.best_score_}")
@@ -116,8 +116,8 @@ cm = confusion_matrix(y_train, y_train_pred)
 
 plt.figure(figsize=(8, 6))
 sns.heatmap(cm, annot=True, fmt='d', cmap='Reds',
-            xticklabels=['Benign (Pred)', 'Malignant (Pred)'],
-            yticklabels=['Benign (Real)', 'Malignant (Real)'])
+            xticklabels=['Control (Pred)', 'Case (Pred)'],
+            yticklabels=['Control (Real)', 'Case (Real)'])
 plt.xlabel('Prediction')
 plt.ylabel('Reality')
 plt.title('Cross-Validation Confusion Matrix')
