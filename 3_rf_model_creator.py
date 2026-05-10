@@ -62,7 +62,7 @@ print(f"Shape of y_test: {y_test.shape}")
 #------------------------------------------------------------------
 
 # Random Forest Classifier with constant hyperparameters
-rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=1, random_state=42)
+rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=2, random_state=42)
 
 #------------------------------------------------------------------
 # RANDOM SEARCH FOR HYPERPARAMETER OPTIMIZATION 
@@ -175,8 +175,6 @@ for i, param in enumerate(parameters):
 #------------------------------------------------------------------
 
 acc_scores = cross_val_score(rs_model, X_train, y_train, cv=10, scoring="accuracy")
-print(f"Accuracy Scores: {acc_scores}")
-print(f"Mean Accuracy: {acc_scores.mean()}")
 
 #------------------------------------------------------------------
 # CONFUSION MATRIX
@@ -198,9 +196,11 @@ plt.show()
 plt.close()
 
 #------------------------------------------------------------------
-# PRECISION, RECALL AND F1-SCORE
+# ACCURACY, PRECISION, RECALL AND F1-SCORE
 #------------------------------------------------------------------
 
-print(f"\nPrecision: {precision_score(y_train, y_train_pred)}")
+print(f"Accuracy Scores: {acc_scores}")
+print(f"Mean Accuracy: {acc_scores.mean()}")
+print(f"Precision: {precision_score(y_train, y_train_pred)}")
 print(f"Recall: {recall_score(y_train, y_train_pred)}")
 print(f"F1-Score: {f1_score(y_train, y_train_pred)}")

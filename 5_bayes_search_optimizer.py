@@ -66,24 +66,24 @@ print(f"Shape of y_test: {y_test.shape}")
 #------------------------------------------------------------------
 
 # Random Forest Classifier with constant hyperparameters
-rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=1, random_state=42)
+rf = RandomForestClassifier(n_jobs=-1, class_weight='balanced', verbose=2, random_state=42)
 
 #------------------------------------------------------------------
 # BAYESIAN SEARCH FOR HYPERPARAMETER OPTIMIZATION
 #------------------------------------------------------------------
 
 space = {
-    'n_estimators': Integer(200, 300), 
-    'max_depth': Integer(15, 30), 
-    'min_samples_split': Integer(3, 7), 
-    'min_samples_leaf': Integer(3, 7), 
-    'ccp_alpha': Real(0.005, 0.015), 
-    'criterion': Categorical(['entropy']), 
-    'max_features': Categorical(['sqrt', 0.1, 0.2, 0.3, 0.4]), 
-    'min_impurity_decrease': Real(0.0, 0.006) 
+    'n_estimators': Integer(100, 800),
+    'max_depth': Categorical([None] + list(range(10, 40))),
+    'min_samples_split': Integer(5, 15),
+    'min_samples_leaf': Integer(1, 10),
+    'ccp_alpha': Real(0.001, 0.3),
+    'criterion': Categorical(['entropy', 'gini']),
+    'max_features': Categorical(['sqrt', 'log2', 0.1]),
+    'min_impurity_decrease': Real(0.0, 0.005)
 }
 
-bayes_search = BayesSearchCV(rf, space, cv=10, scoring='recall', n_iter=100, verbose=2, random_state=42, n_jobs=-1)
+bayes_search = BayesSearchCV(rf, space, cv=10, scoring='recall', n_iter=50, random_state=42, n_jobs=-1)
 bayes_search.fit(X_train, y_train)
 bs_model = bayes_search.best_estimator_
 print(f"Best score: {bayes_search.best_score_}")
@@ -109,8 +109,6 @@ print("Optimizer results saved successfully.")
 #------------------------------------------------------------------
 
 acc_scores = cross_val_score(bs_model, X_train, y_train, cv=10, scoring="accuracy")
-print(f"Accuracy Scores: {acc_scores}")
-print(f"Mean Accuracy: {acc_scores.mean()}")
 
 #------------------------------------------------------------------
 # CONFUSION MATRIX
@@ -134,10 +132,12 @@ plt.show()
 plt.close()
 
 #------------------------------------------------------------------
-# PRECISION, RECALL AND F1-SCORE
+# ACCURACY, PRECISION, RECALL AND F1-SCORE
 #------------------------------------------------------------------
 
-print(f"\nPrecision: {precision_score(y_train, y_train_pred)}")
+print(f"Accuracy Scores: {acc_scores}")
+print(f"Mean Accuracy: {acc_scores.mean()}")
+print(f"Precision: {precision_score(y_train, y_train_pred)}")
 print(f"Recall: {recall_score(y_train, y_train_pred)}")
 print(f"F1-Score: {f1_score(y_train, y_train_pred)}")
 
